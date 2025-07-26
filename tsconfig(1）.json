@@ -1,0 +1,16 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.app.json"
+        },
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ],
+    "vueCompilerOptions": {
+        "globalTypes": [
+            "./env.d.ts"
+        ]
+    }
+}

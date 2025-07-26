@@ -31,13 +31,14 @@ export default{
             console.log(tel);
         }
 
-        return{
-            name,
-            age,
-            changeAge,
-            changeName,
-            showTel
-        }
+        // return{
+            // name,
+            // age,
+            // changeAge,
+            // changeName,
+            // showTel
+        // }
+        return ()=>'hahha'
     }
 }
 </script>

@@ -1,20 +1,29 @@
-<template>
-    <Person/>  
-</template>
+<script setup>
+import{ ref } from 'vue';
+import WelcomeCard from './components/person.vue';
 
-<script>
-import Person from "./components/person.vue"
-export default {
-                name: 'App',// The name of the component
-                components: {Person}//注册组件
-}
+const name = ref('')
 </script>
 
+<template>
+    <div>
+        <h1>hello,{{  name|| '刘在伊美炸了' }}</h1>
+
+        <input v-model="name" placeholder="请输入你的名字" />
+
+        <WelcomeCard>
+            <p>Nice to meet you, {{ name||'girlfriend' }}</p>
+        </WelcomeCard>
+    </div>
+
+</template>
 
 
 
-
-
-
-
-
+<style scoped>
+input{
+    padding:8px;
+    margin: 10px 0;
+    border: 1px solid #aaa
+}
+</style>

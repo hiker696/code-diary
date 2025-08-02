@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人金融管理系统</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: 'microsoft yahei', sans-serif;
+            background:linear-gradient(135deg, #f0f0f0 0%, #d9d9d9 100%);
+            min-height: 100vh;
+            color:#333;
+        }
+
+        .container{
+            max-width: 200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header{
+            text-align: center;
+            color:white;
+            margin-bottom: 30px;
+        }
+
+        .header h1{
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p{
+            font-size: 1.1rem;
+            opacity: 0.9;}
+
+
+
+        .dashboard{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap:20px;
+            margin-bottom: 30px;
+        }
+
+        .card{
+            background:white;
+            border-radius: 15px;
+            padding:25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, boss-shadow 0.3s ease;
+        }
+
+        .card:hover{
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .card h3{
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4a4a4a;
+        }
+
+        .card .amount{
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .income .amount{
+            color: #27ae60;
+        }
+        .expense .amount{
+            color: #e74c3c;
+        }  
+        .balance .amount{
+            color: #2980b9;
+        }
+
+        .main-content{
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-section{
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-section h2{
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+        }
+        .form-group{
+            margin-bottom: 15px;
+        }
+        
+        .form-group label{
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select,
+        .form-group textarea{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus,
+        .form-group textarea:focus{
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        .btn{
+            background-color: #2980b9;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+
+        .btn:active{
+            transform: translateY(0);
+            background-color: #1a5276;
+        }
+        
+        .transation-list{
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow-y:auto;
+        }
+
+        .transation-item{
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            transition:background-color 0.3s ease;
+        }
+
+        .transation-item:hover{
+            background-color: #f9f9f9;
+        }
+
+        .transation-item:last-child{
+            border-bottom: none;
+        }
+
+        .transaction-info h4{
+            margin-bottom: 5px;
+            color:#2980b9;
+        }
+
+        .transaction-info p{
+            margin: 0;
+            color: #7f8c8d;
+        }
+
+        .transation-amount{
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .transaction-amount.income{
+            color: #27ae60;
+        }
+
+        .transaction-amount.expense{
+            color: #e74c3c;
+        }
+
+        .chart-section{
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-section h3{
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+        }
+
+        .budget-section{
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            }
+
+        .budget-item{
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .progress-bar{
+            background-color: #2980b9;
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width:300px;
+        }
+        .progress-fill{
+            height: 100%;
+            background-color: #27ae60;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.over-budget{
+            background-color: #e74c3c;
+        }
+
+        .delete-btn{
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .delete-btn:hover{
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard{
+                grid-template-columns: 1fr;
+            }
+            .main-content{
+                grid-template-columns: 1fr;
+            }
+        
+        .chart-section{
+            grid-template-columns: 1fr;
+        }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header">
+                <h1>个人金融管理系统</h1>
+                <p>基于银行业务经验的智能财务管理平台</p>
+            </div>
+
+            <div class="dashboard">
+                <div class="card income">
+                    <h3>总收入</h3>
+                    <div class="amount">{{ totalIncome | currency }}</div>
+                    <p>本月收入情况</p>
+        </div>
+                <div class="card expense">
+                    <h3>总支出</h3>
+                    <div class="amount">{{ totalExpense | currency }}</div>
+                    <p>本月支出情况</p> 
+                </div>
+                <div class="card balance">
+                    <h3>净资产</h3>
+                    <div class="amount">{{ netWorth | currency }}</div>
+                    <p>当前净资产</p>
+                </div>
+
+                <div class="card budget">
+                    <h3>预算使用情况</h3>
+                    <div class="amount">{{ budgetUsed | currency }}</div>
+                    <p>本月预算使用情况</p>
+
+    </div>
+</body>
+</html>
